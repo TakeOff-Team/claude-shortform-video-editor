@@ -1,0 +1,55 @@
+#!/bin/bash
+# The editor's toolbox. Claude runs these; you never have to.
+#
+#   ./edit doctor                         check the setup
+#   ./edit study <url or file> [name]     break down a reference video (frames, pace, captions)
+#   ./edit new <slug> <video> [script]    start a project (normalizes the video, makes audio.wav)
+#   ./edit chunks <slug>                  raw footage -> every piece of speech, transcribed on its own
+#   ./edit words <slug> <start> <end>     exact word timings for one stretch of the raw
+#   ./edit check <slug>                   stutter / restart / filler scan of the picked takes
+#   ./edit cut <slug>                     assemble picks.json -> cut.mp4
+#   ./edit verify <slug>                  dead-space scan + read-through of the cut
+#   ./edit precut <slug>                  use the video as-is (already edited) as the cut
+#   ./edit captions <slug>                word-level captions from cut.mp4 -> words.json
+#   ./edit face <slug>                    frames with guide lines, to find where the face sits
+#   ./edit storyboard <slug>              one card per beat with a real frame -> out/storyboard.html
+#   ./edit render <slug> [version]        render, master audio to -14 LUFS, add music if set
+#   ./edit qa <slug> [version]            contact sheet of the finished video, one still per beat
+#   ./edit new-style                      start my-style/ from the template (onboarding)
+
+set -e
+cd "$(dirname "$0")"
+ROOT=$(pwd)
+PY="$ROOT/.venv/bin/python"
+CMD=${1:-help}; shift || true
+
+need_setup() {
+  if [ ! -x "$PY" ] || [ ! -d engine/node_modules/remotion ]; then
+    echo "Setup isn't finished yet. Run ./setup.sh first."; exit 1
+  fi
+}
+proj() { [ -n "${1:-}" ] || { echo "which project? (./edit $CMD <slug>)"; exit 2; }; P="projects/$1"; [ -d "$P" ] || { echo "no project '$1' in projects/"; exit 2; }; }
+
+case "$CMD" in
+  doctor) exec ./setup.sh --check ;;
+  study) need_setup; exec "$PY" tools/study.py "$@" ;;
+  new) need_setup; exec tools/new_project.sh "$@" ;;
+  chunks) need_setup; proj "${1:-}"; "$PY" tools/chunks.py "$P" "${@:2}" | tee "$P/chunks.txt"; echo; echo "saved $P/chunks.txt" ;;
+  words) need_setup; proj "${1:-}"; exec "$PY" tools/retime.py "$P" "${@:2}" ;;
+  check) need_setup; proj "${1:-}"; exec "$PY" tools/stutter_check.py "$P" ;;
+  cut) need_setup; proj "${1:-}"; exec "$PY" tools/assemble.py "$P" ;;
+  verify) need_setup; proj "${1:-}"; exec "$PY" tools/verify_cut.py "$P" ;;
+  precut) need_setup; proj "${1:-}"; cp "$P/source.mp4" "$P/cut.mp4"; rm -f "$P/cut_map.json"; echo "using the video as-is: $P/cut.mp4" ;;
+  captions) need_setup; proj "${1:-}"; exec "$PY" tools/captions.py "$P" ;;
+  face) need_setup; proj "${1:-}"; exec tools/face_frames.sh "$P" ;;
+  storyboard) need_setup; proj "${1:-}"; node tools/build_props.mjs "$1" && exec node engine/scripts/storyboard.mjs "$1" ;;
+  render) need_setup; proj "${1:-}"; exec tools/render.sh "$1" "${2:-}" ;;
+  qa) need_setup; proj "${1:-}"; exec "$PY" tools/qa_sheet.py "$P" "${2:-}" ;;
+  new-style)
+    mkdir -p my-style/references
+    for f in style.md style.json feedback.md; do
+      if [ -e "my-style/$f" ]; then echo "my-style/$f already exists, leaving it alone"; else cp "templates/$f" "my-style/$f"; echo "created my-style/$f"; fi
+    done ;;
+  help|-h|--help) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//' ;;
+  *) echo "unknown command '$CMD'. ./edit help lists them."; exit 2 ;;
+esac

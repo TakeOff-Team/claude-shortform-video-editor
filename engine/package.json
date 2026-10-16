@@ -1,0 +1,23 @@
+{
+  "name": "claude-shortform-video-editor-engine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Remotion renderer for Claude Shortform Video Editor: cut + captions + beats + your style -> finished vertical video",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.445",
+    "@remotion/cli": "4.0.445",
+    "@remotion/layout-utils": "4.0.445",
+    "@remotion/renderer": "4.0.445",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remotion": "4.0.445"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}

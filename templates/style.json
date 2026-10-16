@@ -1,0 +1,32 @@
+{
+  "name": "my style",
+  "language": "en",
+  "vocabulary": [],
+  "colors": {
+    "background": "#F4F2EE",
+    "background2": "#E7E3DC",
+    "surface": "#FFFFFF",
+    "ink": "#141414",
+    "muted": "#6E6A64",
+    "accent": "#FF5B2E",
+    "accent2": "#2F6BFF",
+    "captionText": "#FFFFFF",
+    "captionBg": "rgba(0,0,0,0.55)"
+  },
+  "fonts": {
+    "heading": "Inter",
+    "body": "Inter",
+    "caption": "Inter",
+    "headingWeight": 800,
+    "bodyWeight": 500,
+    "captionWeight": 800
+  },
+  "background": "dots",
+  "captions": { "style": "pill", "uppercase": false, "size": 64, "maxWords": 3, "maxChars": 18 },
+  "cards": { "radius": 28, "shadow": "soft", "border": false },
+  "motion": { "energy": "normal", "drift": true },
+  "marks": { "style": "hand", "color": "" },
+  "split": 0.5,
+  "punchIn": 1.12,
+  "clip": { "lead_in": 0.03, "end_early": 0.08, "max_pause": 0.12 }
+}

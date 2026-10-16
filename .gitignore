@@ -1,0 +1,19 @@
+# installed by setup.sh
+.venv/
+engine/node_modules/
+
+# your videos and renders stay on your Mac
+projects/*
+!projects/.gitkeep
+engine/public/*
+!engine/public/.gitkeep
+
+# your style is yours (remove these lines if you want to version it)
+my-style/*
+!my-style/README.md
+
+# build output
+engine/build/
+*.tmp.mp4
+.DS_Store
+__pycache__/
