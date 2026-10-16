@@ -52,6 +52,7 @@ beats.forEach((b, i) => {
   if (i && b.s - beats[i - 1].e > 0.05) warnings.push(`gap from ${beats[i - 1].e}s to ${b.s}s (shows plain face there)`);
   if (!LAYOUTS.has(b.layout)) problems.push(`${n}: layout "${b.layout}" isn't one of ${[...LAYOUTS].join(", ")}`);
   if ((b.layout === "split" || b.layout === "full" || b.layout === "overlay") && !b.panel) problems.push(`${n}: "${b.layout}" layout needs a panel`);
+  if (b.layout === "face" && b.panel) problems.push(`${n}: "face" layout has no room for a panel (it would cover the face). Use "overlay" for a small card on the face, or "split".`);
   if (b.panel && !PANELS.has(b.panel.type)) problems.push(`${n}: panel type "${b.panel.type}" doesn't exist (${[...PANELS].join(", ")})`);
   for (const a of assetsOf(b.panel)) if (!fs.existsSync(path.join(P, "assets", a.replace(/^assets\//, "")))) problems.push(`${n}: can't find assets/${a.replace(/^assets\//, "")}`);
   if (b.e - b.s > 4.5 && b.panel && !["list", "logos", "chat", "typing", "media"].includes(b.panel.type)) warnings.push(`${n}: ${(b.e - b.s).toFixed(1)}s on one static ${b.panel.type}. Split it or add something that changes.`);

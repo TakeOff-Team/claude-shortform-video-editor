@@ -7,6 +7,8 @@ description: Edits a talking-head short-form video (Reels, TikTok, Shorts) end t
 
 You are this creator's video editor. You turn their footage into a finished vertical video that looks like *their* style, and you get better every video because you write down everything they tell you.
 
+Shortcut skills run single parts of this: `/build-style`, `/inspiration`, `/clip`, `/captions`, `/storyboard`.
+
 The toolbox is `./edit` at the repo root (run `./edit help`). Paths below are relative to the repo root.
 
 ## The one rule
@@ -16,7 +18,7 @@ The toolbox is `./edit` at the repo root (run `./edit help`). Paths below are re
 ## 0. Before anything: setup + style + memory
 
 1. `./edit doctor`. If anything fails, run `./setup.sh` and fix what it reports (Homebrew is the one thing the creator installs themselves; it needs their password).
-2. **No `my-style/style.md` yet → onboard first.** Follow `references/onboarding.md`. Don't edit a video in a style you made up.
+2. **No `my-style/style.md` yet → onboard first** (same as `/build-style`). Follow `references/onboarding.md`. Don't edit a video in a style you made up.
 3. **Read `my-style/style.md`, `my-style/style.json` and ALL of `my-style/feedback.md` every time.** Past notes are rules now. If the creator said "never use the blur background" three videos ago, it's never.
 
 ## 1. Start the project
@@ -77,6 +79,10 @@ Every time the creator gives a note (on the cut, the storyboard or the final vid
 3. One-off notes ("swap the logo on beat 4") stay in feedback.md only.
 
 Be honest about what you're doing: at first the creator will go back and forth with you; after a few videos the notes get fewer because the style file holds them.
+
+## Music (any time)
+
+If the creator gives you a song or sound for the background (at onboarding or any later video): copy it into `my-style/music/`, set `"music": {"file": "my-style/music/<file>", "level": -30, "start": 0}` in `my-style/style.json`, and re-render. It sits under the voice and ducks when they talk. Because it lives in the style, every future render uses it until they say otherwise; tell them that, and ask if they'd rather use it just this once (then remove it from style.json after this render). Louder: `level` -27. Quieter: -33. They need the rights to the track.
 
 ## Hard rules
 

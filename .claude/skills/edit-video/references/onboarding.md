@@ -21,7 +21,7 @@ Ask these one at a time (skip any they've already answered):
 ## 2. Study the references
 
 For each reference: `./edit study <link or file> [short-name]`.
-Instagram and TikTok links often need a login and fail; when that happens, ask the creator to save the video or screen record it and pass the file.
+Public Instagram, TikTok and YouTube links download fine (the tool updates yt-dlp and retries if a site changed). Private ones fail; then ask the creator to save the video or screen record it and pass the file.
 
 Then **look at** the outputs (they're images, view them):
 - `hook.jpg`: the first 3 seconds, 4 frames a second. How does it open?

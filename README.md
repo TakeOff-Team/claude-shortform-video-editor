@@ -37,7 +37,7 @@ Open Claude Code in the folder where you keep projects and paste this:
 Clone https://github.com/TakeOff-Team/claude-shortform-video-editor and run its setup.sh. If anything fails, fix it and run it again until it says "All set."
 ```
 
-Claude installs everything for you: ffmpeg, Node, Python, Whisper (speech to text, runs on your Mac) and Remotion (the renderer). The one thing it can't do for you is install Homebrew if you don't have it, because that needs your Mac password. If setup asks, paste the command it gives you into Terminal, then tell Claude to keep going.
+Claude installs everything for you: ffmpeg, Node, Python, Whisper (speech to text, runs on your Mac), yt-dlp (downloads your reference videos) and Remotion (the renderer). The one thing it can't do for you is install Homebrew if you don't have it, because that needs your Mac password. If setup asks, paste the command it gives you into Terminal, then tell Claude to keep going.
 
 <details>
 <summary>Prefer to do it yourself?</summary>
@@ -55,6 +55,17 @@ cd claude-shortform-video-editor
 2. Type `/edit-video` (or just "edit this video" and drag the file in).
 3. **The first time, it onboards you.** It asks what your content is about, who it's for and how you want it to feel, then asks for **3 to 5 videos you'd love yours to look like**. It studies them frame by frame (layouts, captions, colours, pace, how they open) and writes your style guide in `my-style/`.
 4. From then on, every video: give it the file (and your script if you have one) → approve the cut → approve the storyboard → get the finished video.
+
+### Every command
+
+| Type | What it does |
+|---|---|
+| `/edit-video` | The whole thing: clip, captions, graphics, storyboard, render, QA |
+| `/build-style` | Builds your style from a quick interview + 3 to 5 videos you love (runs on its own the first time) |
+| `/inspiration` | Give it any edited video (link or file) and it learns to edit like that, then adds what you pick to your style |
+| `/clip` | Just clips your raw footage: last good take of every line, zero dead space |
+| `/captions` | Just captions, spelled right, in your caption style |
+| `/storyboard` | Plans the whole edit and shows you every beat before anything renders |
 
 ## Getting great results (read this)
 
@@ -125,7 +136,7 @@ projects/<name>/
 ## Troubleshooting
 
 - **Something's missing:** `./edit doctor`, or tell Claude "run the doctor and fix what it finds."
-- **A reference link won't download:** Instagram and TikTok often block downloads. Save the video (or screen record it) and give Claude the file.
+- **A reference link won't download:** public Instagram, TikTok and YouTube links work, and the downloader updates itself when a site changes. Private videos won't: save the video (or screen record it) and give Claude the file.
 - **Captions misspell a name:** tell Claude. It adds the name to your vocabulary so it's right from then on.
 - **Transcription is slow on an older Mac:** ask Claude to use `WHISPER_MODEL=small`.
 - **Rendering is slow:** normal. Expect 1 to 3 minutes per minute of video.

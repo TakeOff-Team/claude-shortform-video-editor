@@ -31,8 +31,14 @@ if re.match(r"https?://", src):
     name = name or re.sub(r"[^a-z0-9]+", "-", src.lower().split("?")[0].rstrip("/").split("/")[-1])[:40] or "reference"
     out = refs / name
     out.mkdir(parents=True, exist_ok=True)
-    r = subprocess.run(["yt-dlp", "-q", "--no-warnings", "-f", "mp4/bestvideo*+bestaudio/best", "--merge-output-format", "mp4",
-                        "-o", str(out / "video.%(ext)s"), src], capture_output=True, text=True)
+    venv_dl = ROOT / ".venv" / "bin" / "yt-dlp"  # setup keeps this one current; an old yt-dlp can't open Instagram
+    dl = [str(venv_dl) if venv_dl.exists() else "yt-dlp", "-q", "--no-warnings", "-f", "mp4/bestvideo*+bestaudio/best",
+          "--merge-output-format", "mp4", "-o", str(out / "video.%(ext)s"), src]
+    r = subprocess.run(dl, capture_output=True, text=True)
+    if (r.returncode != 0 or not (out / "video.mp4").exists()) and venv_dl.exists():
+        print("download failed, updating yt-dlp and trying again...")
+        subprocess.run([str(ROOT / ".venv" / "bin" / "pip"), "install", "-q", "--upgrade", "yt-dlp"], capture_output=True)
+        r = subprocess.run(dl, capture_output=True, text=True)
     if r.returncode != 0 or not (out / "video.mp4").exists():
         sys.exit("Couldn't download that link (Instagram/TikTok often need a login).\n"
                  "Save the video to your computer or screen record it, then run: ./edit study <file> " + name +

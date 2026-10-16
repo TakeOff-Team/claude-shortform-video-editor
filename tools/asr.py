@@ -87,7 +87,10 @@ def word_list(result: dict, offset: float = 0.0) -> list[dict]:
     for seg in result.get("segments", []):
         for w in seg.get("words", []):
             t = w["word"].strip()
-            if t:
+            if t and out and t[0] in "%.,!?;:)]'’" and not w["word"].startswith(" "):
+                out[-1]["text"] += t  # "1" + "%" -> "1%": one word, not a fragment
+                out[-1]["e"] = round(offset + w["end"], 3)
+            elif t:
                 out.append({"text": t, "s": round(offset + w["start"], 3), "e": round(offset + w["end"], 3)})
     return out
 

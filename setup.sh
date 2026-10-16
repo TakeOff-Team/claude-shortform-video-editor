@@ -4,8 +4,8 @@
 #   ./setup.sh           install everything that's missing, then check it all works
 #   ./setup.sh --check   only check, change nothing
 #
-# Installs: Homebrew packages (ffmpeg, node, python, yt-dlp), a private Python environment
-# with Whisper for transcription (.venv), and Remotion for rendering (engine/node_modules).
+# Installs: Homebrew packages (ffmpeg, node, python), a private Python environment (.venv)
+# with Whisper for transcription and yt-dlp for downloading reference videos, and Remotion for rendering (engine/node_modules).
 # Safe to run again any time: it skips whatever is already there.
 
 set -u
@@ -42,7 +42,7 @@ else
   exit 1
 fi
 
-step "3. Tools (ffmpeg, Node, Python, yt-dlp)"
+step "3. Tools (ffmpeg, Node, Python)"
 need() { # need <command> <brew formula>
   if command -v "$1" >/dev/null 2>&1; then
     ok "$1"
@@ -56,7 +56,6 @@ need() { # need <command> <brew formula>
 need ffmpeg ffmpeg
 need ffprobe ffmpeg
 need node node
-need yt-dlp yt-dlp
 
 # Python 3.10+ for Whisper (the one built into macOS is too old)
 PY=""
@@ -76,16 +75,19 @@ if [ -n "$NODE_MAJOR" ] && [ "$NODE_MAJOR" -lt 18 ]; then
   bad "Node $NODE_MAJOR is too old (Remotion needs 18+). Run: brew upgrade node"
 fi
 
-step "4. Transcription (Whisper)"
+step "4. Transcription (Whisper) + downloads (yt-dlp)"
 if [ "$ARCH" = "arm64" ]; then WPKG="mlx-whisper"; WMOD="mlx_whisper"; else WPKG="openai-whisper"; WMOD="whisper"; fi
-if [ -x .venv/bin/python ] && .venv/bin/python -c "import $WMOD, numpy" 2>/dev/null; then
+if [ -x .venv/bin/python ] && .venv/bin/python -c "import $WMOD, numpy, yt_dlp" 2>/dev/null; then
   ok "$WPKG"
+  # Instagram and TikTok change often and an old yt-dlp stops downloading them, so keep it current
+  if [ $CHECK_ONLY = 0 ]; then .venv/bin/pip install -q --upgrade yt-dlp >/dev/null 2>&1; fi
+  ok "yt-dlp $(.venv/bin/yt-dlp --version 2>/dev/null)"
 elif [ $CHECK_ONLY = 1 ]; then
-  bad "$WPKG is not installed"
+  bad "$WPKG or yt-dlp is not installed"
 elif [ -n "$PY" ]; then
   echo "  creating .venv and installing $WPKG (a few minutes the first time)..."
-  "$PY" -m venv .venv && .venv/bin/pip install -q --upgrade pip && .venv/bin/pip install -q "$WPKG" numpy \
-    && ok "$WPKG (installed)" || bad "could not install $WPKG"
+  "$PY" -m venv .venv && .venv/bin/pip install -q --upgrade pip && .venv/bin/pip install -q "$WPKG" numpy yt-dlp \
+    && ok "$WPKG + yt-dlp (installed)" || bad "could not install $WPKG"
 fi
 
 step "5. Rendering (Remotion)"

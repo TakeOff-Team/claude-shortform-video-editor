@@ -15,6 +15,7 @@ import path from "path";
 
 const ENGINE = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const ROOT = path.dirname(ENGINE);
+process.chdir(ENGINE); // reuse the render browser setup.sh put in engine/node_modules (no second 90 MB download)
 const slug = process.argv[2];
 const P = path.join(ROOT, "projects", slug);
 const props = JSON.parse(fs.readFileSync(path.join(P, ".props.json"), "utf8"));

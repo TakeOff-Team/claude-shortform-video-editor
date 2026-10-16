@@ -47,7 +47,7 @@ for k, (s, e, *note) in enumerate(picks):
     # 2. fragments + filler
     for i, w in enumerate(ws):
         t = norm(w["text"])
-        if w["text"].endswith("-") or (len(t) == 1 and t not in ("a", "i") and not w["text"].strip(".,!?").isupper()):  # "X" the app is a word
+        if w["text"].endswith("-") or (len(t) == 1 and t not in ("a", "i") and not t.isdigit() and not w["text"].strip(".,!?").isupper()):  # "X" the app is a word
             flags.append(f"fragment '{w['text']}' at {w['s']:.2f}s")
         if t in FILLER:
             flags.append(f"filler '{w['text']}' at {w['s']:.2f}s")
@@ -77,6 +77,8 @@ for k, (s, e, *note) in enumerate(picks):
     for a, b in islands:
         length = (b - a) * 0.02
         if length > 0.4 or length > 0.8 * (e - s):  # real words, or a one-word pick
+            continue
+        if any(w["s"] < s + a * 0.02 < w["e"] for w in ws):  # the soft tail of a word ("plat-FORM"), not a stray sound
             continue
         txt = transcribe(np.concatenate([pad, seg[a * FRAME:b * FRAME], pad]))["text"]
         if all(norm(w) in NONSPEECH for w in txt.split()) or not any(c.isalpha() for c in txt):

@@ -17,3 +17,6 @@ engine/build/
 *.tmp.mp4
 .DS_Store
 __pycache__/
+
+# render browser (if Remotion ever runs outside engine/)
+.remotion/
