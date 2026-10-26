@@ -2,6 +2,7 @@
 # The editor's toolbox. Claude runs these; you never have to.
 #
 #   ./edit doctor                         check the setup
+#   ./edit phone [N] | phone list         pull the newest N videos off a plugged-in iPhone into inbox/
 #   ./edit study <url or file> [name]     break down a reference video (frames, pace, captions)
 #   ./edit new <slug> <video> [script]    start a project (normalizes the video, makes audio.wav)
 #   ./edit chunks <slug>                  raw footage -> every piece of speech, transcribed on its own
@@ -32,6 +33,7 @@ proj() { [ -n "${1:-}" ] || { echo "which project? (./edit $CMD <slug>)"; exit 2
 
 case "$CMD" in
   doctor) exec ./setup.sh --check ;;
+  phone) exec tools/get_video.sh "$@" ;;
   study) need_setup; exec "$PY" tools/study.py "$@" ;;
   new) need_setup; exec tools/new_project.sh "$@" ;;
   chunks) need_setup; proj "${1:-}"; "$PY" tools/chunks.py "$P" "${@:2}" | tee "$P/chunks.txt"; echo; echo "saved $P/chunks.txt" ;;
@@ -50,6 +52,6 @@ case "$CMD" in
     for f in style.md style.json feedback.md; do
       if [ -e "my-style/$f" ]; then echo "my-style/$f already exists, leaving it alone"; else cp "templates/$f" "my-style/$f"; echo "created my-style/$f"; fi
     done ;;
-  help|-h|--help) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//' ;;
+  help|-h|--help) sed -n '2,21p' "$0" | sed 's/^# \{0,1\}//' ;;
   *) echo "unknown command '$CMD'. ./edit help lists them."; exit 2 ;;
 esac

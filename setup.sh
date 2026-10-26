@@ -110,7 +110,7 @@ fi
 
 echo
 if [ $FAILED = 0 ]; then
-  printf "\033[32mAll set.\033[0m Open Claude Code in this folder and type /edit-video\n"
+  printf "\033[32mAll set.\033[0m Open Claude Code in this folder and type /get-video or /edit-video\n"
 else
   printf "\033[31mSomething above needs fixing.\033[0m Paste this output to Claude and it will sort it out.\n"
   exit 1

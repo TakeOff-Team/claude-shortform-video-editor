@@ -8,6 +8,7 @@ It runs inside [Claude Code](https://claude.com/claude-code) on your Mac. No edi
 
 ## What it does
 
+- **Pulls your video off your iPhone** over the cable. No AirDrop, no Photos app, no hunting for the file.
 - **Clips your raw footage.** Restarts, stutters, saying the same line four times: it keeps your last good take of every line and cuts the rest.
 - **Removes dead space.** No pauses over a tenth of a second, no "ummm", no slow start.
 - **Captions every word**, spelled right (it learns your names and brands).
@@ -52,20 +53,21 @@ cd claude-shortform-video-editor
 ## Use it
 
 1. Open Claude Code **inside the `claude-shortform-video-editor` folder**.
-2. Type `/edit-video` (or just "edit this video" and drag the file in).
+2. Plug in your iPhone and type `/get-video`. Or type `/edit-video` (or just "edit this video") and drag the file in.
 3. **The first time, it onboards you.** It asks what your content is about, who it's for and how you want it to feel, then asks for **3 to 5 videos you'd love yours to look like**. It studies them frame by frame (layouts, captions, colours, pace, how they open) and writes your style guide in `my-style/`.
-4. From then on, every video: give it the file (and your script if you have one) → approve the cut → approve the storyboard → get the finished video.
+4. From then on, every video: `/get-video` (or give it the file and your script if you have one) → approve the cut → approve the storyboard → get the finished video.
 
 ### Every command
 
 | Type | What it does |
 |---|---|
 | `/edit-video` | The whole thing: clip, captions, graphics, storyboard, render, QA |
+| `/get-video` | Pulls the newest recording (or "/get-video 3" for the last 3) off your plugged-in iPhone |
 | `/build-style` | Builds your style from a quick interview + 3 to 5 videos you love (runs on its own the first time) |
 | `/inspiration` | Give it any edited video (link or file) and it learns to edit like that, then adds what you pick to your style |
 | `/clip` | Just clips your raw footage: last good take of every line, zero dead space |
 | `/captions` | Just captions, spelled right, in your caption style |
-| `/storyboard` | Plans the whole edit and shows you every beat before anything renders |
+| `/storyboard` | Plans the whole edit and shows you every beat before anything renders. Give it an edited video you like and it plans yours the same way |
 
 ## Getting great results (read this)
 
@@ -102,6 +104,7 @@ my-style/
   feedback.md     every note you've given, dated
   references/     the videos you gave it, broken down frame by frame
   music/          your music bed, if you use one
+inbox/            raw videos pulled off your iPhone by /get-video
 projects/<name>/
   source.mp4      your video, converted to 1080x1920
   cut.mp4         the clipped cut
@@ -117,6 +120,7 @@ projects/<name>/
 ```
 ./edit doctor                         check the setup
 ./edit study <url or file> [name]     break down a reference video
+./edit phone [N] | phone list         pull the newest N videos off a plugged-in iPhone
 ./edit new <slug> <video> [script]    start a project
 ./edit chunks <slug>                  raw footage -> every piece of speech, transcribed on its own
 ./edit words <slug> <start> <end>     exact word timings for one stretch
@@ -136,6 +140,7 @@ projects/<name>/
 ## Troubleshooting
 
 - **Something's missing:** `./edit doctor`, or tell Claude "run the doctor and fix what it finds."
+- **/get-video can't find your phone:** use a cable, unlock the phone and tap **Trust**. Keep it on the home screen while it pulls. Older videos with iCloud "Optimize Storage" on may only be in iCloud: open the video on your phone once, then try again.
 - **A reference link won't download:** public Instagram, TikTok and YouTube links work, and the downloader updates itself when a site changes. Private videos won't: save the video (or screen record it) and give Claude the file.
 - **Captions misspell a name:** tell Claude. It adds the name to your vocabulary so it's right from then on.
 - **Transcription is slow on an older Mac:** ask Claude to use `WHISPER_MODEL=small`.
